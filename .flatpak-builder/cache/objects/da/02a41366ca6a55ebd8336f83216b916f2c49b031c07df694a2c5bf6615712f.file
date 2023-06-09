@@ -1,0 +1,7 @@
+[Runtime]
+name=com.vscodium.codium.tool.podman
+sdk=org.freedesktop.Sdk/x86_64/22.08
+
+[ExtensionOf]
+ref=app/com.vscodium.codium/x86_64/stable
+runtime=org.freedesktop.Sdk/x86_64/22.08

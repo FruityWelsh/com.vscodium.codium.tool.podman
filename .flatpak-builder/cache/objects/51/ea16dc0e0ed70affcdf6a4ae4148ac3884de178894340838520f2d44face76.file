@@ -1,0 +1,64 @@
+{
+  "id" : "com.vscodium.codium.tool.podman",
+  "branch" : "22.08",
+  "runtime" : "com.vscodium.codium",
+  "runtime-version" : "stable",
+  "runtime-commit" : "07483ee4f2a9a798fbe26bbabebdaf199304c69fe5029134d701f64dd833e62d",
+  "sdk" : "org.freedesktop.Sdk//22.08",
+  "sdk-commit" : "ac3b29f9b04246d2b346de5632914232ee9c511702fc3c4e0d1c125a6de1e3ca",
+  "build-options" : {
+    "prefix" : "/app/tools/podman",
+    "strip" : true,
+    "append-path" : "/usr/lib/sdk/golang/bin"
+  },
+  "modules" : [
+    {
+      "name" : "podman",
+      "buildsystem" : "simple",
+      "sources" : [
+        {
+          "url" : "https://github.com/containers/podman.git",
+          "commit" : "3906dc19e6eebc2de46bc219c369d4160ede4ecf",
+          "x-checker-data" : {
+            "type" : "json",
+            "url" : "https://api.github.com/repos/containers/podman/releases/latest",
+            "tag-query" : ".tag_name",
+            "timestamp-query" : ".published_at",
+            "version-query" : "$tag | sub(\"^v\"; \"\")"
+          },
+          "type" : "git"
+        }
+      ],
+      "build-commands" : [
+        "make PREFIX=${FLATPAK_DEST} podman-remote",
+        "install -Dm755 bin/podman-remote -t ${FLATPAK_DEST}/bin/"
+      ]
+    },
+    {
+      "name" : "bundle-setup",
+      "buildsystem" : "simple",
+      "sources" : [
+        {
+          "path" : "com.vscodium.codium.tool.podman.metainfo.xml",
+          "type" : "file"
+        }
+      ],
+      "build-commands" : [
+        "install -Dm644 -t $FLATPAK_DEST/share/metainfo $FLATPAK_ID.metainfo.xml",
+        "appstream-compose --basename=$FLATPAK_ID --prefix=$FLATPAK_DEST --origin=flatpak $FLATPAK_ID"
+      ]
+    }
+  ],
+  "cleanup" : [
+    "*.a",
+    "*.la",
+    "/share/man"
+  ],
+  "build-extension" : true,
+  "separate-locales" : false,
+  "appstream-compose" : false,
+  "sdk-extensions" : [
+    "org.freedesktop.Sdk.Extension.golang"
+  ],
+  "source-date-epoch" : 1686351360
+}
